@@ -2,7 +2,7 @@
 /**
  * Plugin Name:       Hug Media Gallery Query Loop
  * Description:       Example block scaffolded with Create Block tool. Requires Media Library Categories plugin.
- * Version:           0.1.0
+ * Version:           2.1.0
  * Requires at least: 6.7
  * Requires PHP:      7.4
  * Author:            George Saprito
@@ -333,6 +333,7 @@ function hug_media_gallery_query_loop_render_block( $attributes ) {
                         $output .= '<a href="' . esc_url($full_image_url) . '" ';
                         $output .= 'data-pswp-width="' . esc_attr($full_width) . '" ';
                         $output .= 'data-pswp-height="' . esc_attr($full_height) . '" ';
+						$output .= 'data-cropped="true"';
                         $output .= 'class="pswp-gallery__item" ';
                         $output .= 'title="' . esc_attr($title) . '">';
                     }
@@ -388,8 +389,41 @@ function hug_media_gallery_query_loop_render_block( $attributes ) {
     }
 
     wp_reset_postdata();
-    
-    return $output;
+	
+	// Enqueue the frontend styles (Borders, Fancy Layout, Masonry)
+	wp_enqueue_style( 
+		'hmgq-frontend-styles', 
+		plugins_url( 'build/hug-media-gallery-query-loop/style-index.css', __FILE__ ), 
+		array(), 
+		'2.1.0' 
+	);
+
+	// Enqueue the common/editor styles
+	wp_enqueue_style( 
+		'hmgq-common-styles', 
+		plugins_url( 'build/hug-media-gallery-query-loop/index.css', __FILE__ ), 
+		array(), 
+		'2.1.0' 
+	);
+		
+	// Load the local PhotoSwipe CSS
+	wp_enqueue_style( 
+		'photoswipe-core-css', 
+		plugins_url( 'assets/photoswipe.css', __FILE__ ), 
+		array(), 
+		'5.4.3' 
+	);
+
+	// Load the local PhotoSwipe JS (if your view.js isn't already bundling it)
+	wp_enqueue_script( 
+		'hmgq-photoswipe-core', 
+		plugins_url( 'assets/photoswipe.umd.min.js', __FILE__ ), 
+		array(), 
+		'5.4.3', 
+		true 
+	);
+
+	return $output;
 }
 
 // --- 5. REST ROUTE FOR JS CONFIGURATION (No Change) ---
