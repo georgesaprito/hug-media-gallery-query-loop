@@ -9,6 +9,28 @@
     }
 }
 
+/* Target ONLY the Masonry wrapper to avoid breaking Tiled/Grid */
+.hug-media-query-loop-wrapper.is-masonry {
+    column-gap: 1.5rem;
+    line-height: 0; // The secret to removing the ghost line
+
+    .hug-media-item {
+        margin-bottom: 1.5rem;
+        break-inside: avoid;
+        display: block;
+    }
+
+    /* Target the image specifically within Masonry */
+    .hug-media-item img {
+        border: 1px solid #a9a9a9;
+        border-radius: 3px;
+        box-shadow: 0 0 5px #707070;
+        display: block;
+        width: 100%;
+        height: auto; // Masonry needs auto, Tiled needs 100%
+    }
+}
+
 .hug-media-query-loop-wrapper {
     box-sizing: border-box;
     width: 100%;
