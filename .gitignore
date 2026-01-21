@@ -23,6 +23,5 @@ Desktop.ini
 *.swo
 
 # --- WordPress/Build Tools ---
-# We are NOT ignoring /build/ because we want to track the compiled assets.
-# However, we can ignore the local-only zip files if you use 'wp-scripts bundle'
+build/
 /*.zip
