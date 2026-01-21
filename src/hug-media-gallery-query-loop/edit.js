@@ -50,7 +50,8 @@ const useMediaTaxonomy = () => {
         return () => { isMounted = false; };
     }, []);
 
-    const options = [{ label: __('All Categories', 'hug-media-gallery-query-loop'), value: "" }];
+    // CHANGE 1: Updated the default placeholder label from "All Categories" to "Select a Category"
+    const options = [{ label: __('Select a Category', 'hug-media-gallery-query-loop'), value: "" }];
     if (categories) {
         categories.forEach(cat => {
             options.push({ label: cat.name, value: cat.slug });
@@ -93,7 +94,7 @@ export default function Edit({ attributes, setAttributes }) {
 						onChange={(value) => setAttributes( {sortOption: value})}
                     />
 					<SelectControl
-						label={__('Rder Direction', 'hug-media-gallery-query-loop')}
+						label={__('Order Direction', 'hug-media-gallery-query-loop')}
 						value={order}
 						options = {[
 							{ label: __('Descending', 'hug-media-gallery-query-loop'), value: 'DESC' },
@@ -154,16 +155,25 @@ export default function Edit({ attributes, setAttributes }) {
             </BlockControls>
 
             <div {...blockProps}>
-                <ServerSideRender
-                    block="create-block/hug-media-gallery-query-loop"
-                    attributes={attributes}
-                    EmptyResponsePlaceholder={() => (
-                        <Placeholder 
-                            label={__("Hug Media Gallery Query Loop", "hug-media-gallery-query-loop")}
-                            instructions={`Layout: ${layoutStyle.toUpperCase()}, Columns: ${columns}, Lightbox: ${lightboxStatus}`}
-                        />
-                    )}
-                />
+                {/* CHANGE 2: Conditional Rendering. If mediaTaxonomy is empty, show the Placeholder. Otherwise, run ServerSideRender */}
+                { ! mediaTaxonomy ? (
+                    <Placeholder 
+                        icon="images-alt2"
+                        label={__("Select a Category", "hug-media-gallery-query-loop")}
+                        instructions={__("Please select a media category from the block settings to display images.", "hug-media-gallery-query-loop")}
+                    />
+                ) : (
+                    <ServerSideRender
+                        block="create-block/hug-media-gallery-query-loop"
+                        attributes={attributes}
+                        EmptyResponsePlaceholder={() => (
+                            <Placeholder 
+                                label={__("No Images Found", "hug-media-gallery-query-loop")}
+                                instructions={__("No images were found for the selected category.", "hug-media-gallery-query-loop")}
+                            />
+                        )}
+                    />
+                ) }
             </div>
         </>
     );

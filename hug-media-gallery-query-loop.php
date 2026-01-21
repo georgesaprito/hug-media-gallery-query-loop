@@ -179,6 +179,25 @@ function hug_media_gallery_query_loop_render_block( $attributes ) {
     
     $media_taxonomy_slug = hug_get_media_taxonomy_slug();
     $category_slug = $attributes['mediaTaxonomy'] ?? '';
+	
+	// If no category is selected, we want to stop immediately.
+    $category_slug = $attributes['mediaTaxonomy'] ?? '';
+    
+    if ( empty( $category_slug ) ) {
+        // If we are in the editor (ServerSideRender call), return null so edit.js 
+        // can show its own custom Placeholder instead of "No media found".
+        $is_editor_request = false;
+        if ( ! empty( $_SERVER['REQUEST_URI'] ) ) {
+            if ( strpos( $_SERVER['REQUEST_URI'], 'context=edit' ) !== false || strpos( $_SERVER['REQUEST_URI'], '/block-renderer/' ) !== false ) {
+                return null; 
+            }
+        }
+        
+        // On the frontend, return an empty string so nothing is rendered.
+        return '';
+    }
+    // --- END NEW EARLY EXIT CHECK ---
+	
     $sort_option = $attributes['sortOption'] ?? 'date';
 	$order_dir = $attributes['order'] ?? 'DESC';
     $image_size = $attributes['imageSize'] ?? 'full';
