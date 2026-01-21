@@ -29,7 +29,11 @@
     },
     "sortOption": {
       "type": "string",
-      "default": "newest_to_oldest"
+      "default": "date"
+    },
+    "order": {
+      "type": "string",
+      "default": "DESC"
     },
     "imageSize": {
       "type": "string",

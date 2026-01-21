@@ -179,7 +179,8 @@ function hug_media_gallery_query_loop_render_block( $attributes ) {
     
     $media_taxonomy_slug = hug_get_media_taxonomy_slug();
     $category_slug = $attributes['mediaTaxonomy'] ?? '';
-    $sort_option = $attributes['sortOption'] ?? 'newest_to_oldest';
+    $sort_option = $attributes['sortOption'] ?? 'date';
+	$order_dir = $attributes['order'] ?? 'DESC';
     $image_size = $attributes['imageSize'] ?? 'full';
     $columns = $attributes['columns'] ?? 3;
     $use_lightbox = $attributes['useLightbox'] ?? false;
@@ -195,6 +196,8 @@ function hug_media_gallery_query_loop_render_block( $attributes ) {
         'post_type'          => 'attachment',
         'post_status'        => array('inherit', 'publish'),
         'posts_per_page'     => -1, 
+		'orderby'			 => $sort_option,
+		'order'				 => $order_dir,
         'tax_query'          => array()
     ];
     
@@ -210,12 +213,12 @@ function hug_media_gallery_query_loop_render_block( $attributes ) {
         $args['post_parent'] = 0;
     }
     
-    switch ( $sort_option ) {
+/*     switch ( $sort_option ) {
         case 'newest_to_oldest': $args['order'] = 'desc'; $args['orderby'] = 'date'; break;
         case 'oldest_to_newest': $args['order'] = 'asc'; $args['orderby'] = 'date'; break;
         case 'a_z': $args['order'] = 'asc'; $args['orderby'] = 'title'; break;
         case 'z_a': $args['order'] = 'desc'; $args['orderby'] = 'title'; break;
-    }
+    } */
     
     $media_query = new WP_Query( $args );
     $output = '';

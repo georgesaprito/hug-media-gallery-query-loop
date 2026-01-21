@@ -62,7 +62,7 @@ const useMediaTaxonomy = () => {
 
 export default function Edit({ attributes, setAttributes }) {
     const { categoryOptions, isLoading, hasCategories } = useMediaTaxonomy();
-    const { layoutStyle, columns, align, mediaTaxonomy, sortOption, imageSize, useLightbox, showTitles } = attributes;
+    const { layoutStyle, columns, align, mediaTaxonomy, sortOption, order, imageSize, useLightbox, showTitles } = attributes;
 
     const blockProps = useBlockProps({
         className: `hug-media-query-loop-editor align${align || ''}`
@@ -83,16 +83,24 @@ export default function Edit({ attributes, setAttributes }) {
                         disabled={isLoading || !hasCategories}
                     />
                     <SelectControl
-                        label={__("Sort Options", "hug-media-gallery-query-loop")}
-                        value={sortOption || 'newest_to_oldest'}
-                        onChange={(val) => setAttributes({ sortOption: val })}
-                        options={[
-                            { label: "Newest to Oldest (Date)", value: "newest_to_oldest" },
-                            { label: "Oldest to Newest (Date)", value: "oldest_to_newest" },
-                            { label: "A → Z (Title)", value: "a_z" },
-                            { label: "Z → A (Title)", value: "z_a" }
-                        ]}
+						label={__('Sort By', 'hug-media-gallery-query-loop')}
+						value={sortOption}
+						options={[
+							{ label: __('Date', 'hug-media-gallery-query-loop'), value: 'date' },
+							{ label: __('Title', 'hug-media-gallery-query-loop'), value: 'title' },
+							{ label: __('Order', 'hug-media-gallery-query-loop'), value: 'menu_order' },
+						]}
+						onChange={(value) => setAttributes( {sortOption: value})}
                     />
+					<SelectControl
+						label={__('Rder Direction', 'hug-media-gallery-query-loop')}
+						value={order}
+						options = {[
+							{ label: __('Descending', 'hug-media-gallery-query-loop'), value: 'DESC' },
+							{label: __('Ascending', 'hug-media-gallery-query-loop'), value: 'ASC' },
+						]}
+						onChange={(value) => setAttributes({ order: value })}
+					/>
                     <SelectControl
                         label={__("Image Resolution", "hug-media-gallery-query-loop")}
                         help={__("Sets the size for all images displayed.", "hug-media-gallery-query-loop")}

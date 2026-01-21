@@ -1,0 +1,1 @@
+{"version":3,"file":"hug-media-gallery-query-loop/index.css","mappings":";;;AAAA;EACI;AACJ,C","sources":["webpack://hug-media-gallery-query-loop/./src/hug-media-gallery-query-loop/index.scss"],"sourcesContent":[".wp-block-create-block-hug-media-gallery-query-loop {\r\n    border: 1px dotted red;\r\n}"],"names":[],"ignoreList":[],"sourceRoot":""}
