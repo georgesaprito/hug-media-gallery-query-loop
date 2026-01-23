@@ -157,3 +157,46 @@
 .hug-media-item h3 {
     pointer-events: none; /* Allows the click to pass through to the link below */
 }
+
+// --- RESPONSIVE ROTATION & LIGHTBOX FIX ---
+@media screen and (max-width: 932px) {
+    .hug-media-query-loop-container.is-fancy-layout {
+        overflow: visible; // Allows the shadow/borders to not get clipped
+        
+        .hug-media-query-loop-wrapper {
+            display: grid !important; // Overrides the 'block' layout
+            // Portrait: 1 col | Landscape: 2 cols
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)) !important;
+            height: auto !important; // Overrides the JS height calculation
+            gap: 15px !important;
+            position: relative !important;
+        }
+
+        // Neutralize the "Fancy" Absolute Positioning engine
+        .gallery-item-wrapper {
+            position: relative !important; // Resets 'absolute' from line 52
+            top: auto !important;
+            left: auto !important;
+            width: 100% !important;
+            height: auto !important;
+            aspect-ratio: 4 / 3; // Keeps the thumb targets large and consistent
+            
+            .hug-media-item {
+                height: 100%;
+                width: 100%;
+
+                a.fancy-link-ready {
+                    display: block !important;
+                    width: 100% !important;
+                    height: 100% !important;
+
+                    img {
+                        width: 100% !important;
+                        height: 100% !important;
+                        object-fit: cover !important;
+                    }
+                }
+            }
+        }
+    }
+}

@@ -138,7 +138,34 @@ function initLightbox() {
     });
 }
 
+/**
+ * Handle Rotation and Resize
+ * Clears the 'processed' flag and reruns the layout logic
+ */
+let resizeTimer;
+function handleRotation() {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(() => {
+        const containers = document.querySelectorAll('.hug-media-query-loop-container.is-fancy-layout');
+        
+        containers.forEach(container => {
+            const wrapper = container.querySelector('.hug-media-query-loop-wrapper');
+            if (wrapper) {
+                // Reset the flag so renderFancyGallery runs again
+                wrapper.dataset.processed = "false";
+                renderFancyGallery(container);
+            }
+        });
+
+        // Re-initialize PhotoSwipe to bind to the newly created DOM elements
+        initLightbox();
+    }, 250); 
+}
+
 // Start the process
 document.addEventListener('DOMContentLoaded', () => {
     initLightbox();
+    
+    // This is the fix for your phone rotation
+    window.addEventListener('resize', handleRotation);
 });
