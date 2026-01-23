@@ -82,6 +82,7 @@ function renderFancyGallery(container) {
                 data-pswp-width="${Math.round(item.original_width)}" 
                 data-pswp-height="${Math.round(item.original_height)}" 
                 class="pswp-gallery__item fancy-link-ready" 
+                data-cropped="true"
                 title="${item.title}"
                 style="display: block; width: 100%; height: 100%;">`;
         }

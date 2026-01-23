@@ -2,7 +2,7 @@
 /**
  * Plugin Name:       Hug Media Gallery Query Loop
  * Description:       Example block scaffolded with Create Block tool. Requires Media Library Categories plugin.
- * Version:           2.1.1
+ * Version:           2.1.3
  * Requires at least: 6.7
  * Requires PHP:      7.4
  * Author:            George Saprito
