@@ -2,7 +2,7 @@
 /**
  * Plugin Name:       Hug Media Gallery Query Loop
  * Description:       Example block scaffolded with Create Block tool. Requires Media Library Categories plugin.
- * Version:           2.1.3
+ * Version:           2.1.4
  * Requires at least: 6.7
  * Requires PHP:      7.4
  * Author:            George Saprito
@@ -391,21 +391,6 @@ function hug_media_gallery_query_loop_render_block( $attributes ) {
             $output .= '</div>';
         }
         
-        // --- CONDITIONAL ASSET ENQUEUING (No Change) ---
-        
-        if ($use_lightbox) {
-            wp_enqueue_style( 'hmgq-photoswipe-css', plugins_url( 'build/hug-media-gallery-query-loop/photoswipe.css', __FILE__ ), array(), '5.4.3' );
-            wp_enqueue_script( 'hmgq-photoswipe-core', plugins_url( 'build/hug-media-gallery-query-loop/photoswipe.umd.min.js', __FILE__ ), array(), '5.4.3', true );
-        }
-        
-        // Only enqueue view.js for front end since fancy layout is only rendered there
-        if ($needs_frontend_js) {
-             $view_dependencies = array( 'jquery' ); 
-             
-             wp_enqueue_script( 'hmgq-frontend-init', plugins_url( 'build/hug-media-gallery-query-loop/view.js', __FILE__ ), $view_dependencies, '1.0', true );
-        }
-
-
     } else {
         $output .= '<p>' . __( 'No media found matching the criteria.', 'hug-media-gallery-query-loop' ) . '</p>';
     }
@@ -428,22 +413,36 @@ function hug_media_gallery_query_loop_render_block( $attributes ) {
 		'2.1.0' 
 	);
 		
-	// Load the local PhotoSwipe CSS
-	wp_enqueue_style( 
-		'photoswipe-core-css', 
-		plugins_url( 'assets/photoswipe.css', __FILE__ ), 
-		array(), 
-		'5.4.3' 
-	);
+	// 1. Enqueue the CSS from CDN
+    wp_enqueue_style( 
+        'hug-mgql-photoswipe-css', 
+        'https://cdn.jsdelivr.net/npm/photoswipe@5.4.3/dist/photoswipe.css', 
+        array(), 
+        '5.4.3' 
+    );
 
-	// Load the local PhotoSwipe JS (if your view.js isn't already bundling it)
-	wp_enqueue_script( 
-		'hmgq-photoswipe-core', 
-		plugins_url( 'assets/photoswipe.umd.min.js', __FILE__ ), 
-		array(), 
-		'5.4.3', 
-		true 
-	);
+    // 2. Enqueue the JS from CDN
+    wp_enqueue_script( 
+        'hug-mgql-photoswipe-js', 
+        'https://cdn.jsdelivr.net/npm/photoswipe@5.4.3/dist/umd/photoswipe.umd.min.js', 
+        array(), 
+        '5.4.3', 
+        true 
+    );
+
+    // 3. Enqueue your view.js and tell it to wait for the JS handle above
+    if ($needs_frontend_js) {
+        // CRITICAL: The handle 'hug-mgql-photoswipe-js' must match exactly here
+        $view_dependencies = array( 'jquery', 'hug-mgql-photoswipe-js' ); 
+
+        wp_enqueue_script( 
+            'hmgq-frontend-init', 
+            plugins_url( 'build/hug-media-gallery-query-loop/view.js', __FILE__ ), 
+            $view_dependencies, 
+            '1.1', 
+            true 
+        );
+    }
 
 	return $output;
 }
