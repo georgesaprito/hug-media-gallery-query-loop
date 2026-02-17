@@ -87,8 +87,17 @@ function renderFancyGallery(container) {
                 style="display: block; width: 100%; height: 100%;">`;
         }
 
-        // Clean up the image HTML to ensure it fills the recursive container
-        content += item.image_html.replace(/(<img[^>]*style=["']?)([^"']*)["']?/i, '$1width: 100%; height: 100%; object-fit: cover;');
+        const tempDiv = document.createElement('div');
+        tempDiv.innerHTML = item.image_html;
+        const img = tempDiv.querySelector('img');
+        if (img) {
+            img.style.width = '100%';
+            img.style.height = '100%';
+            img.style.objectFit = 'cover';
+            content += img.outerHTML;
+        } else {
+            content += item.image_html; // Fallback
+        }
 
         if (settings.lightbox) content += '</a>';
         if (settings.showTitles) content += `<h3>${item.title}</h3>`;

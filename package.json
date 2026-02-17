@@ -1,6 +1,6 @@
 {
   "name": "hug-media-gallery-query-loop",
-  "version": "2.1.4",
+  "version": "2.1.5",
   "description": "Hug Media Gallery with Fancy Recursive and Masonry Layouts.",
   "author": "George Saprito",
   "license": "GPL-2.0-or-later",
@@ -11,12 +11,15 @@
     "lint:css": "wp-scripts lint-style",
     "lint:js": "wp-scripts lint-js",
     "packages-update": "wp-scripts packages-update",
-    "start": "wp-scripts start"
+    "start": "wp-scripts start",
+    "zip": "bestzip hug-media-gallery-query-loop.zip build/ hug-media-gallery-query-loop.php src/hug-media-gallery-query-loop/block.json",
+    "deploy": "npm run build && npm run zip"
   },
   "dependencies": {
     "photoswipe": "^5.4.3"
   },
   "devDependencies": {
-    "@wordpress/scripts": "^27.0.0"
+    "@wordpress/scripts": "^27.0.0",
+    "bestzip": "^2.1.5"
   }
 }
