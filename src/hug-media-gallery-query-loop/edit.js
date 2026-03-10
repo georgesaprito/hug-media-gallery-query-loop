@@ -50,7 +50,6 @@ const useMediaTaxonomy = () => {
         return () => { isMounted = false; };
     }, []);
 
-    // CHANGE 1: Updated the default placeholder label from "All Categories" to "Select a Category"
     const options = [{ label: __('Select a Category', 'hug-media-gallery-query-loop'), value: "" }];
     if (categories) {
         categories.forEach(cat => {
@@ -63,14 +62,25 @@ const useMediaTaxonomy = () => {
 
 export default function Edit({ attributes, setAttributes }) {
     const { categoryOptions, isLoading, hasCategories } = useMediaTaxonomy();
-    const { layoutStyle, columns, align, mediaTaxonomy, sortOption, order, imageSize, useLightbox, showTitles } = attributes;
+    // Destructure useMediaUrl from attributes
+    const { 
+        layoutStyle, 
+        columns, 
+        align, 
+        mediaTaxonomy, 
+        sortOption, 
+        order, 
+        imageSize, 
+        useLightbox, 
+        showTitles, 
+        useMediaUrl 
+    } = attributes;
 
     const blockProps = useBlockProps({
         className: `hug-media-query-loop-editor align${align || ''}`
     });
 
     const isFixedLayout = layoutStyle === 'tiled' || layoutStyle === 'fancy';
-    const lightboxStatus = useLightbox ? "Yes" : "No";
 
     return (
         <>
@@ -84,24 +94,24 @@ export default function Edit({ attributes, setAttributes }) {
                         disabled={isLoading || !hasCategories}
                     />
                     <SelectControl
-						label={__('Sort By', 'hug-media-gallery-query-loop')}
-						value={sortOption}
-						options={[
-							{ label: __('Date', 'hug-media-gallery-query-loop'), value: 'date' },
-							{ label: __('Title', 'hug-media-gallery-query-loop'), value: 'title' },
-							{ label: __('Order', 'hug-media-gallery-query-loop'), value: 'menu_order' },
-						]}
-						onChange={(value) => setAttributes( {sortOption: value})}
+                        label={__('Sort By', 'hug-media-gallery-query-loop')}
+                        value={sortOption}
+                        options={[
+                            { label: __('Date', 'hug-media-gallery-query-loop'), value: 'date' },
+                            { label: __('Title', 'hug-media-gallery-query-loop'), value: 'title' },
+                            { label: __('Order', 'hug-media-gallery-query-loop'), value: 'menu_order' },
+                        ]}
+                        onChange={(value) => setAttributes( {sortOption: value})}
                     />
-					<SelectControl
-						label={__('Order Direction', 'hug-media-gallery-query-loop')}
-						value={order}
-						options = {[
-							{ label: __('Descending', 'hug-media-gallery-query-loop'), value: 'DESC' },
-							{label: __('Ascending', 'hug-media-gallery-query-loop'), value: 'ASC' },
-						]}
-						onChange={(value) => setAttributes({ order: value })}
-					/>
+                    <SelectControl
+                        label={__('Order Direction', 'hug-media-gallery-query-loop')}
+                        value={order}
+                        options = {[
+                            { label: __('Descending', 'hug-media-gallery-query-loop'), value: 'DESC' },
+                            {label: __('Ascending', 'hug-media-gallery-query-loop'), value: 'ASC' },
+                        ]}
+                        onChange={(value) => setAttributes({ order: value })}
+                    />
                     <SelectControl
                         label={__("Image Resolution", "hug-media-gallery-query-loop")}
                         help={__("Sets the size for all images displayed.", "hug-media-gallery-query-loop")}
@@ -134,15 +144,34 @@ export default function Edit({ attributes, setAttributes }) {
                             max={6}
                         />
                     )}
-                    <ToggleControl
-                        label={__("Enable Lightbox", "hug-media-gallery-query-loop")}
-                        checked={!!useLightbox}
-                        onChange={(val) => setAttributes({ useLightbox: val })}
-                    />
+
+                    {/* Moved Show Image Titles up to maintain visual stability */}
                     <ToggleControl
                         label={__("Show Image Titles", "hug-media-gallery-query-loop")}
                         checked={!!showTitles}
                         onChange={(val) => setAttributes({ showTitles: val })}
+                    />
+
+                    <ToggleControl
+                        label={__("Enable Lightbox", "hug-media-gallery-query-loop")}
+                        checked={!!useLightbox}
+                        onChange={(val) => {
+                            setAttributes({ useLightbox: val });
+                            // Logic: Turn off Media URL if lightbox is disabled
+                            if (!val) setAttributes({ useMediaUrl: false });
+                        }}
+                    />
+
+                    <ToggleControl
+                        label={__("Use Media URL", "hug-media-gallery-query-loop")}
+                        checked={!!useMediaUrl}
+                        disabled={!useLightbox}
+                        onChange={(val) => setAttributes({ useMediaUrl: val })}
+                        help={
+                            !useLightbox 
+                                ? __("Enable Lightbox to use this feature.", "hug-media-gallery-query-loop")
+                                : __("Adds a 'View Project' link to the lightbox.", "hug-media-gallery-query-loop")
+                        }
                     />
                 </PanelBody>
             </InspectorControls>
@@ -155,7 +184,6 @@ export default function Edit({ attributes, setAttributes }) {
             </BlockControls>
 
             <div {...blockProps}>
-                {/* CHANGE 2: Conditional Rendering. If mediaTaxonomy is empty, show the Placeholder. Otherwise, run ServerSideRender */}
                 { ! mediaTaxonomy ? (
                     <Placeholder 
                         icon="images-alt2"

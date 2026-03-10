@@ -200,3 +200,69 @@
         }
     }
 }
+
+/* Styling the custom PhotoSwipe button */
+.pswp__button--project-link {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1000;
+    
+    
+    background: rgba(0, 0, 0, 0.6);
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 4px;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 600;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    cursor: pointer;
+    transition: background 0.2s ease;
+    width: auto !important;
+
+    /*width: auto !important;
+    padding: 0 15px;
+    font-size: 14px;
+    color: #fff;
+    line-height: 60px; 
+    text-decoration: none;
+    font-weight: 500;*/
+}
+
+.pswp__button--project-link:hover {
+    background: rgba(0, 0, 0, 0.9);
+    border: 1px solid rgb(255, 255, 255);
+    /*color: #ccc;*/
+    padding: 10px 20px;
+}
+
+
+/* Position the button at the bottom center 
+.pswp__project-link {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1000;
+    
+    
+    background: rgba(0, 0, 0, 0.6);
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 4px;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 600;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.pswp__project-link:hover {
+    background: rgba(0, 0, 0, 0.9);
+    border-color: #fff;
+}
+
+*/

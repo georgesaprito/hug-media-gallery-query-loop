@@ -3,8 +3,6 @@ import PhotoSwipe from 'photoswipe';
 
 /**
  * Recursive Split Algorithm for the Fancy Layout
- * This function calculates the x, y, width, and height for each image
- * by splitting the available area based on the number of images.
  */
 function calculateFancyLayout(items, x, y, width, height) {
     const count = items.length;
@@ -24,7 +22,6 @@ function calculateFancyLayout(items, x, y, width, height) {
     const remainingRatio = rightPart.length / count;
 
     if (width >= height) {
-        // Split horizontally
         w1 = width * ratio;
         w2 = width * remainingRatio;
         x1 = x;
@@ -34,7 +31,6 @@ function calculateFancyLayout(items, x, y, width, height) {
         y2 = y;
         h2 = height;
     } else {
-        // Split vertically
         h1 = height * ratio;
         h2 = height * remainingRatio;
         x1 = x;
@@ -78,9 +74,11 @@ function renderFancyGallery(container) {
 
         let content = '';
         if (settings.lightbox) {
+            // UPDATED: Added data-pswp-project-url attribute here
             content += `<a href="${item.full_url}" 
                 data-pswp-width="${Math.round(item.original_width)}" 
                 data-pswp-height="${Math.round(item.original_height)}" 
+                data-pswp-project-url="${item.project_url || ''}"
                 class="pswp-gallery__item fancy-link-ready" 
                 data-cropped="true"
                 title="${item.title}"
@@ -96,7 +94,7 @@ function renderFancyGallery(container) {
             img.style.objectFit = 'cover';
             content += img.outerHTML;
         } else {
-            content += item.image_html; // Fallback
+            content += item.image_html; 
         }
 
         if (settings.lightbox) content += '</a>';
@@ -124,7 +122,6 @@ function initLightbox() {
         }
     });
 
-    // Wait for recursive layout to finish before binding PhotoSwipe
     if (!allFancyProcessed) {
         setTimeout(initLightbox, 100);
         return;
@@ -141,41 +138,50 @@ function initLightbox() {
                 gallery: gallery,
                 children: childSelector,
                 pswpModule: PhotoSwipe,
-				clickToCloseNonZoomable: false,
+                clickToCloseNonZoomable: false,
             });
+
+            // NEW: Register the "View Project" Button
+            lightbox.on('uiRegister', function() {
+                lightbox.pswp.ui.registerElement({
+                    name: 'project-link',
+                    appendTo: 'wrapper',
+                    ariaLabel: 'View Project',
+                    order: 7,
+                    isButton: true,
+                    html: 'View Project',
+                    onClick: (event, el, pswp) => {
+                        const currSlideElement = pswp.currSlide.data.element;
+                        const projectUrl = currSlideElement.getAttribute('data-pswp-project-url');
+                        if (projectUrl && projectUrl !== '') {
+                            window.location.href = projectUrl;
+                        }
+                    }
+                });
+            });
+
             lightbox.init();
         }
     });
 }
 
-/**
- * Handle Rotation and Resize
- * Clears the 'processed' flag and reruns the layout logic
- */
 let resizeTimer;
 function handleRotation() {
     clearTimeout(resizeTimer);
     resizeTimer = setTimeout(() => {
         const containers = document.querySelectorAll('.hug-media-query-loop-container.is-fancy-layout');
-        
         containers.forEach(container => {
             const wrapper = container.querySelector('.hug-media-query-loop-wrapper');
             if (wrapper) {
-                // Reset the flag so renderFancyGallery runs again
                 wrapper.dataset.processed = "false";
                 renderFancyGallery(container);
             }
         });
-
-        // Re-initialize PhotoSwipe to bind to the newly created DOM elements
         initLightbox();
     }, 250); 
 }
 
-// Start the process
 document.addEventListener('DOMContentLoaded', () => {
     initLightbox();
-    
-    // This is the fix for your phone rotation
     window.addEventListener('resize', handleRotation);
 });

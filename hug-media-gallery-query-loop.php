@@ -2,7 +2,7 @@
 /**
  * Plugin Name:       Hug Media Gallery Query Loop
  * Description:       Example block scaffolded with Create Block tool. Requires Media Library Categories plugin.
- * Version:           2.1.5
+ * Version:           2.1.6
  * Requires at least: 6.7
  * Requires PHP:      7.4
  * Author:            George Saprito
@@ -136,6 +136,7 @@ function hug_collect_gallery_image_data( $media_query, $image_size ) {
         
         $image_id = get_the_ID();
         $title = get_the_title();
+        $media_url = get_field('media_url', $image_id);
         
         $image_meta = wp_get_attachment_metadata( $image_id );
         
@@ -157,7 +158,7 @@ function hug_collect_gallery_image_data( $media_query, $image_size ) {
             // CRITICAL FIX: Protected dimensions for Photoswipe attributes
             'original_width' => $image_meta['width'] ?? 0, 
             'original_height' => $image_meta['height'] ?? 0, 
-            
+            'project_url' => $media_url ? esc_url($media_url) : '',
             // Dimensions for recursion input (will be overwritten by recursion)
             'width' => $image_meta['width'] ?? 0, 
             'height' => $image_meta['height'] ?? 0, 
@@ -205,6 +206,7 @@ function hug_media_gallery_query_loop_render_block( $attributes ) {
     $use_lightbox = $attributes['useLightbox'] ?? false;
     $layout_style = $attributes['layoutStyle'] ?? 'grid';
     $showTitles = $attributes['showTitles'] ?? false;
+    $use_media_url = $attributes['useMediaUrl'] ?? false;
     
     $original_columns = $columns;
     if ( in_array( $layout_style, ['tiled', 'fancy'] ) ) {
@@ -329,6 +331,11 @@ function hug_media_gallery_query_loop_render_block( $attributes ) {
                 $media_query->the_post();
                 
                 $image_id = get_the_ID();
+                $project_url = '';
+                if( $use_media_url ) {
+                    $project_url = get_field('media_url', $image_id);
+                }
+
                 $image_url = wp_get_attachment_image_url( $image_id, $image_size );
                 $full_image_url = wp_get_attachment_image_url( $image_id, 'full' );
                 
@@ -355,6 +362,11 @@ function hug_media_gallery_query_loop_render_block( $attributes ) {
                         $output .= '<a href="' . esc_url($full_image_url) . '" ';
                         $output .= 'data-pswp-width="' . esc_attr($full_width) . '" ';
                         $output .= 'data-pswp-height="' . esc_attr($full_height) . '" ';
+
+                        if ( $project_url ) {
+                            $output .= 'data-pwsp-project-url="' . esc_url($project_url) . '" ';
+                        }
+
 						$output .= 'data-cropped="true"';
                         $output .= 'class="pswp-gallery__item" ';
                         $output .= 'title="' . esc_attr($title) . '">';

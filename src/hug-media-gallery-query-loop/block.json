@@ -2,10 +2,10 @@
   "$schema": "https://schemas.wp.org/trunk/block.json",
   "apiVersion": 3,
   "name": "create-block/hug-media-gallery-query-loop",
-  "version": "2.1.5",
+  "version": "2.1.6",
   "title": "Hug Media Gallery Query Loop",
   "category": "widgets",
-  "icon": "smiley",
+  "icon": "images-alt2",
   "description": "Example block scaffolded with Create Block tool. Requires Media Library Categories plugin.",
   "example": {},
   "supports": {
@@ -50,6 +50,10 @@
     "useLightbox": {
       "type": "boolean",
       "default": true
+    },
+    "useMediaUrl": {
+        "type": "boolean",
+        "default": false
     },
     "layoutStyle": {
       "type": "string",
